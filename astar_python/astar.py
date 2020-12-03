@@ -1,24 +1,24 @@
-import Math
+import math
 
 class Astar:
 
     def Manhatten_Distance(self, current, other):
         return abs(current.x - other.x) + abs(current.y - other.y)
     def Euclidian_Distance(self, current, other):
-        return Math.sqrt(Math.pow(abs(current.x - other.x), 2) + Math.pow(abs(current.y - other.y)))
+        return math.sqrt(math.pow(abs(current.x - other.x), 2) + math.pow(abs(current.y - other.y)))
     def Chebyshev_Distance(self, current, other):
         D = 1
         D2 = 1
         return D * (abs(current.x - other.x) + abs(current.y - other.y)) + (D2 - 2 * D) * min(abs(current.x - other.x), abs(current.y - other.y))
     def Octile_Distance(self, current, other):
         D = 1
-        D2 = Math.sqrt(2)
+        D2 = math.sqrt(2)
         return D * (abs(current.x - other.x) + abs(current.y - other.y)) + (D2 - 2 * D) * min(abs(current.x - other.x), abs(current.y - other.y))
-    def Euclidian_Distance(self, current, other):
-        A = self.k * 45
+    def Pi_Arc_Distance(self, current, other):
+        A = self.k * ((45/360) * math.pi)
         b = abs(current.x - other.x)
         c = abs(current.y - other.y)
-        return Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2) - (2 * b * c * Math.cosine(A)))#Calculate hypotenuse of non-right hand triangle using Law of Cosines
+        return math.sqrt(math.pow(b, 2) + math.pow(c, 2) - (2 * b * c * math.cos(A)))#Calculate hypotenuse of non-right hand triangle using Law of Cosines
                                                                                         #Conjecture: Will be superior to Euclidian distance when obstacles are on course
                                                                                         # because euclid assumes right traingle with 90 degree corner
                                                                                         # whereas this bases the corner off number of obstacles.
@@ -29,10 +29,18 @@ class Astar:
         self.edgeMode = edgeMode
         self.k = k
 
-        if HMode == "Manhatten_Distance":
+        if HMode == "Euclidian_Distance":
+            self.heuristic = self.Euclidian_Distance
+        elif HMode == "Manhatten_Distance":
             self.heuristic = self.Manhatten_Distance
+        elif HMode == "Chebyshev_Distance":
+            self.heuristic = self.Chebyshev_Distance
+        elif HMode == "Octile_Distance":
+            self.heuristic = self.Octile_Distance
+        elif HMode == "Pi_Arc_Distance":
+            self.heuristic = self.Pi_Arc_Distance
         else:
-            self.heuristic = sel.Manhatten_Distance
+            self.heuristic = self.Manhatten_Distance
 
     class Node:
         def __init__(self, x, y, weight=0):
